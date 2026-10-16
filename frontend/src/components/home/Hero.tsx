@@ -1,6 +1,6 @@
 export default function Hero() {
   return (
-    <section className="bg-paper py-16 text-center px-4">
+    <section className="py-16 text-center px-4">
       <span className="bg-brand/10 text-brand border border-brand/30 rounded-full px-4 py-2 text-sm font-bold inline-block">◆ متجر طبي عراقي — مستلزمات وأجهزة</span>
       <h1 className="text-5xl md:text-7xl font-black leading-tight mt-6 text-ink">
         كل ما تحتاجه عيادتك،

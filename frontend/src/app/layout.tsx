@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import BackgroundPattern from "@/components/layout/BackgroundPattern";
 
 export const metadata: Metadata = {
   title: "Al Thanaya | الثنايا - مستلزمات وأجهزة طبية",
@@ -26,8 +27,11 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/npm/@dawod/thmanyah-font-web@1.2.0/index.min.css"
         />
       </head>
-      <body className="font-sans antialiased bg-paper text-ink">
-        <CartProvider>{children}</CartProvider>
+      <body className="font-sans antialiased bg-paper text-ink relative">
+        <BackgroundPattern />
+        <div className="relative z-10">
+          <CartProvider>{children}</CartProvider>
+        </div>
       </body>
     </html>
   );
