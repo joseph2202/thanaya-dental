@@ -16,8 +16,8 @@ export default function AddToCartButton({ product }: { product: Product }) {
   return (
     <button
       onClick={handleAdd}
-      className={`bg-ink text-paper rounded-full px-8 py-3 font-bold transition ${
-        added ? 'bg-green-600 shadow-[4px_4px_0_#16a34a]' : 'shadow-[4px_4px_0_#FDE047] hover:shadow-[6px_6px_0_#FDE047]'
+      className={`bg-brand text-white rounded-full px-8 py-3 font-bold transition ${
+        added ? 'bg-success shadow-[4px_4px_0_#059669]' : 'shadow-[4px_4px_0_#047ba8] hover:shadow-[6px_6px_0_#047ba8]'
       }`}
     >
       {added ? '✓ تمت الإضافة' : 'أضف للسلة'}

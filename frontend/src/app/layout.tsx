@@ -3,9 +3,12 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 
 export const metadata: Metadata = {
-  title: "ثنايا | مستلزمات وأجهزة طبية",
+  title: "Al Thanaya | الثنايا - مستلزمات وأجهزة طبية",
   description:
     "متجر عراقي للمستلزمات الطبية وطب الأسنان والأجهزة: منتجات موثقة وأسعار بالدينار والدولار.",
+  icons: {
+    icon: '/logo.png',
+  },
 };
 
 export default function RootLayout({
