@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function Hero() {
   return (
     <section className="py-16 text-center px-4">
@@ -11,8 +13,12 @@ export default function Hero() {
         الثنايا متجر عراقي للمستلزمات الطبية وطب الأسنان والأجهزة: منتجات موثقة، أسعار بالدينار والدولار، وتوصيل لكل المحافظات.
       </p>
       <div className="flex gap-4 justify-center mt-8 flex-wrap">
-        <button className="bg-brand text-white rounded-full px-7 py-3 font-bold shadow-[4px_4px_0_#047ba8] hover:shadow-[6px_6px_0_#047ba8] transition">تسوق الآن</button>
-        <button className="border-2 border-ink rounded-full px-7 py-3 font-bold bg-white hover:bg-paper2 transition">تصفح الأجهزة</button>
+        <Link href="/products" className="bg-brand text-white rounded-full px-7 py-3 font-bold shadow-[4px_4px_0_#047ba8] hover:shadow-[6px_6px_0_#047ba8] transition">
+          تسوق الآن
+        </Link>
+        <Link href="/products?category=أجهزة طبية" className="border-2 border-ink rounded-full px-7 py-3 font-bold bg-white hover:bg-paper2 transition">
+          تصفح الأجهزة
+        </Link>
       </div>
     </section>
   );

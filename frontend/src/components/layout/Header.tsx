@@ -2,9 +2,20 @@
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { totalItems } = useCart();
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      router.push('/search?q=' + encodeURIComponent(searchQuery.trim()));
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-paper/95 backdrop-blur border-b-2 border-brand/20">
@@ -20,12 +31,31 @@ export default function Header() {
           />
           <span className="font-black text-xl text-ink">الثنايا</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-6 font-bold text-ink">
+
+        {/* شريط البحث */}
+        <form onSubmit={handleSearch} className="flex-1 max-w-xl hidden md:flex">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="ابحث عن منتج، ماركة، تصنيف..."
+            className="w-full border-2 border-brand/30 rounded-full px-5 py-2 font-bold focus:outline-none focus:border-brand bg-white"
+          />
+          <button
+            type="submit"
+            className="mr-2 bg-brand text-white rounded-full px-5 py-2 font-bold hover:bg-brand-dark transition"
+          >
+            بحث
+          </button>
+        </form>
+
+        <nav className="hidden lg:flex items-center gap-6 font-bold text-ink">
           <Link href="/" className="hover:text-brand transition">الرئيسية</Link>
           <Link href="/products" className="hover:text-brand transition">المنتجات</Link>
           <Link href="/categories" className="hover:text-brand transition">التصنيفات</Link>
           <Link href="/offers" className="hover:text-brand transition">العروض</Link>
         </nav>
+
         <Link href="/cart" className="bg-brand text-white rounded-full px-5 py-2 font-bold relative hover:bg-brand-dark transition">
           السلة
           {totalItems > 0 && (
@@ -35,6 +65,25 @@ export default function Header() {
           )}
         </Link>
       </div>
+
+      {/* شريط البحث للموبايل */}
+      <form onSubmit={handleSearch} className="md:hidden px-4 pb-3">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="ابحث..."
+            className="flex-1 border-2 border-brand/30 rounded-full px-4 py-2 font-bold focus:outline-none focus:border-brand bg-white text-sm"
+          />
+          <button
+            type="submit"
+            className="bg-brand text-white rounded-full px-4 py-2 font-bold hover:bg-brand-dark transition text-sm"
+          >
+            بحث
+          </button>
+        </div>
+      </form>
     </header>
   );
 }
