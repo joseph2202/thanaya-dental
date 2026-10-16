@@ -61,6 +61,11 @@ export default function Header() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
+              {user.role === 'admin' && (
+                <Link href="/admin" className="text-sm font-bold text-brand hover:text-brand-dark transition">
+                  الإدارة
+                </Link>
+              )}
               <Link href="/account" className="text-sm font-bold hover:text-brand transition">
                 حسابي
               </Link>

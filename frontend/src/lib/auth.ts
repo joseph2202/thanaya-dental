@@ -1,9 +1,12 @@
+export type UserRole = 'admin' | 'customer';
+
 export type User = {
   id: string;
   name: string;
   email: string;
   phone: string;
   createdAt: string;
+  role: UserRole;
 };
 
 export const validateEmail = (email: string): boolean => {
@@ -53,6 +56,7 @@ export const registerUser = (name: string, email: string, phone: string, passwor
   }
 
   const newUser: User = {
+    role: 'customer',
     id: 'user-' + Date.now().toString().slice(-8),
     name: name.trim(),
     email: email.toLowerCase().trim(),
@@ -127,4 +131,17 @@ export const getUsers = (): User[] => {
   } catch {
     return [];
   }
+};
+
+
+export const makeAdmin = (userId: string): User | null => {
+  const users = getUsers();
+  const user = users.find((u) => u.id === userId);
+  if (!user) return null;
+  
+  user.role = 'admin';
+  localStorage.setItem('thanaya-users', JSON.stringify(users));
+  localStorage.setItem('thanaya-current-user', JSON.stringify(user));
+  
+  return user;
 };
