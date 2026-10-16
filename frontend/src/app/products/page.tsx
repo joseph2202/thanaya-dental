@@ -1,9 +1,10 @@
 import { searchProducts, getAllBrands, getAllCategories, getPriceRange } from '@/lib/search';
-
-export const instant = false;
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import Link from 'next/link';
+import ProductIcon from '@/components/ui/ProductIcon';
+
+export const instant = false;
 
 export default async function ProductsPage({ searchParams }: { searchParams: Promise<{ category?: string; brand?: string; sort?: string; minPrice?: string; maxPrice?: string }> }) {
   const params = await searchParams;
@@ -19,7 +20,6 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
   const products = searchProducts(filters);
   const brands = getAllBrands();
   const categories = getAllCategories();
-  const priceRange = getPriceRange();
 
   const createQueryString = (key: string, value: string) => {
     const newParams = new URLSearchParams(params as any);
@@ -39,10 +39,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         <p className="text-center text-neutral-600 mb-8">{products.length} منتج وجهاز متاح للتسوق</p>
 
         <div className="grid md:grid-cols-4 gap-6">
-          {/* الفلاتر الجانبية */}
           <aside className="md:col-span-1">
             <div className="bg-white border-2 border-brand/20 rounded-2xl p-5 sticky top-24 space-y-6">
-              {/* التصنيف */}
               <div>
                 <h3 className="font-black mb-3 text-ink">التصنيف</h3>
                 <div className="space-y-2">
@@ -58,8 +56,6 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                   ))}
                 </div>
               </div>
-
-              {/* الماركة */}
               <div>
                 <h3 className="font-black mb-3 text-ink">الماركة</h3>
                 <div className="space-y-2">
@@ -75,41 +71,13 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                   ))}
                 </div>
               </div>
-
-              {/* السعر */}
-              <div>
-                <h3 className="font-black mb-3 text-ink">السعر</h3>
-                <form className="space-y-2" action="/products" method="get">
-                  <input
-                    type="number"
-                    name="minPrice"
-                    placeholder="من"
-                    defaultValue={params.minPrice}
-                    className="w-full border-2 border-brand/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand"
-                  />
-                  <input
-                    type="number"
-                    name="maxPrice"
-                    placeholder="إلى"
-                    defaultValue={params.maxPrice}
-                    className="w-full border-2 border-brand/30 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-brand"
-                  />
-                  <button type="submit" className="w-full bg-brand text-white rounded-lg py-2 text-sm font-bold hover:bg-brand-dark transition">
-                    تطبيق
-                  </button>
-                </form>
-              </div>
-
-              {/* إعادة تعيين */}
               <Link href="/products" className="block text-center bg-paper2 border-2 border-brand/30 rounded-lg py-2 text-sm font-bold hover:bg-brand/10 transition">
                 إعادة تعيين الفلاتر
               </Link>
             </div>
           </aside>
 
-          {/* المنتجات */}
           <div className="md:col-span-3">
-            {/* شريط الترتيب */}
             <div className="bg-white border-2 border-brand/20 rounded-2xl p-4 mb-6 flex items-center justify-between">
               <span className="font-bold text-sm text-ink">ترتيب حسب:</span>
               <div className="flex gap-2 flex-wrap">
@@ -125,7 +93,6 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
               </div>
             </div>
 
-            {/* شبكة المنتجات */}
             {products.length === 0 ? (
               <div className="text-center py-20">
                 <div className="text-8xl mb-6">📦</div>
@@ -143,7 +110,9 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
                     href={`/product/${p.id}`}
                     className="bg-white border-2 border-brand/20 rounded-2xl p-6 font-bold hover:-translate-y-1 transition shadow-[4px_4px_0_#047ba8]"
                   >
-                    <div className="bg-paper2 rounded-xl h-32 mb-4 grid place-items-center text-4xl">{p.emoji}</div>
+                    <div className="bg-paper2 rounded-xl h-32 mb-4 grid place-items-center text-brand">
+                      <ProductIcon name={p.icon} size={64} />
+                    </div>
                     {p.badge && (
                       <span className="inline-block bg-brand/10 text-brand border border-brand/30 rounded-full px-2 py-0.5 text-xs mb-2">
                         {p.badge === 'new' ? 'جديد' : p.badge === 'sale' ? 'خصم' : 'مطلوب'}

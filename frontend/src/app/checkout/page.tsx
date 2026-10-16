@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import ProductIcon from '@/components/ui/ProductIcon';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { saveOrder } from '@/lib/orders';
@@ -170,9 +171,7 @@ export default function CheckoutPage() {
             <div className="space-y-3 mb-6">
               {items.map((item) => (
                 <div key={item.product.id} className="flex items-center gap-3 bg-white rounded-xl p-3 border border-brand/20">
-                  <div className="w-12 h-12 bg-paper2 rounded-lg grid place-items-center text-2xl flex-shrink-0">
-                    {item.product.emoji}
-                  </div>
+                  <div className="w-12 h-12 bg-paper2 rounded-lg grid place-items-center text-brand flex-shrink-0"><ProductIcon name={item.product.icon} size={28} /></div>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-sm truncate text-ink">{item.product.name}</p>
                     <p className="text-xs text-neutral-500">{item.quantity} × {item.product.price.toLocaleString()} د.ع</p>

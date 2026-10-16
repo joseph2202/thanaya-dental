@@ -5,6 +5,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AddToCartButton from '@/components/product/AddToCartButton';
 import BuyNowButton from '@/components/product/BuyNowButton';
+import ProductIcon from '@/components/ui/ProductIcon';
 
 export function generateStaticParams() {
   return products.map((p) => ({ id: p.id }));
@@ -30,8 +31,8 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
         </nav>
 
         <div className="grid md:grid-cols-2 gap-10 items-start">
-          <div className="bg-paper2 rounded-3xl aspect-square grid place-items-center text-[180px] border-2 border-brand/20">
-            {product.emoji}
+          <div className="bg-paper2 rounded-3xl aspect-square grid place-items-center text-brand border-2 border-brand/20">
+            <ProductIcon name={product.icon} size={180} />
           </div>
 
           <div>
@@ -70,7 +71,9 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {related.map((p) => (
                 <Link key={p.id} href={`/product/${p.id}`} className="bg-white border-2 border-brand/20 rounded-2xl p-5 font-bold hover:border-brand hover:-translate-y-1 transition">
-                  <div className="bg-paper2 rounded-xl h-24 mb-3 grid place-items-center text-3xl">{p.emoji}</div>
+                  <div className="bg-paper2 rounded-xl h-24 mb-3 grid place-items-center text-brand">
+                    <ProductIcon name={p.icon} size={48} />
+                  </div>
                   <h3 className="text-sm mb-1 text-ink">{p.name}</h3>
                   <p className="text-ink font-black">{p.price.toLocaleString()} د.ع</p>
                 </Link>

@@ -3,6 +3,7 @@ import { searchProducts } from '@/lib/search';
 export const instant = false;
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import ProductIcon from '@/components/ui/ProductIcon';
 import Link from 'next/link';
 
 export default async function SearchPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
@@ -38,7 +39,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 href={`/product/${p.id}`}
                 className="bg-white border-2 border-brand/20 rounded-2xl p-6 font-bold hover:-translate-y-1 transition shadow-[4px_4px_0_#047ba8]"
               >
-                <div className="bg-paper2 rounded-xl h-32 mb-4 grid place-items-center text-4xl">{p.emoji}</div>
+                <div className="bg-paper2 rounded-xl h-32 mb-4 grid place-items-center text-brand"><ProductIcon name={p.icon} size={64} /></div>
                 {p.badge && (
                   <span className="inline-block bg-brand/10 text-brand border border-brand/30 rounded-full px-2 py-0.5 text-xs mb-2">
                     {p.badge === 'new' ? 'جديد' : p.badge === 'sale' ? 'خصم' : 'مطلوب'}

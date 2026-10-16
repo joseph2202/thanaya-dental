@@ -6,7 +6,7 @@ export type Product = {
   usdPrice: number;
   category: string;
   brand: string;
-  emoji: string;
+  icon: string;
   badge?: 'new' | 'sale' | 'hot';
   stock: number;
 };
@@ -20,7 +20,7 @@ export const products: Product[] = [
     usdPrice: 19,
     category: 'طب الأسنان',
     brand: 'DentaPro',
-    emoji: '🦷',
+    icon: 'Stethoscope',
     badge: 'new',
     stock: 50,
   },
@@ -32,7 +32,7 @@ export const products: Product[] = [
     usdPrice: 34,
     category: 'أجهزة طبية',
     brand: 'MediCare',
-    emoji: '🩺',
+    icon: 'Activity',
     stock: 30,
   },
   {
@@ -43,7 +43,7 @@ export const products: Product[] = [
     usdPrice: 138,
     category: 'كراسي ومتحركة',
     brand: 'MobilityPlus',
-    emoji: '',
+    icon: 'Wheelchair',
     badge: 'hot',
     stock: 8,
   },
@@ -55,7 +55,7 @@ export const products: Product[] = [
     usdPrice: 73,
     category: 'تعقيم',
     brand: 'SterilMax',
-    emoji: '🧼',
+    icon: 'ShieldCheck',
     stock: 15,
   },
   {
@@ -66,7 +66,7 @@ export const products: Product[] = [
     usdPrice: 21,
     category: 'مستلزمات طبية',
     brand: 'CardioTech',
-    emoji: '🩻',
+    icon: 'HeartPulse',
     stock: 40,
   },
   {
@@ -77,7 +77,7 @@ export const products: Product[] = [
     usdPrice: 14,
     category: 'مستلزمات طبية',
     brand: 'SafeHands',
-    emoji: '',
+    icon: 'Hand',
     badge: 'sale',
     stock: 200,
   },
@@ -89,7 +89,7 @@ export const products: Product[] = [
     usdPrice: 9,
     category: 'تعقيم',
     brand: 'CleanMed',
-    emoji: '🧴',
+    icon: 'Droplets',
     stock: 150,
   },
   {
@@ -100,7 +100,7 @@ export const products: Product[] = [
     usdPrice: 6,
     category: 'طب الأسنان',
     brand: 'SurgiClean',
-    emoji: '🪥',
+    icon: 'Brush',
     badge: 'new',
     stock: 500,
   },
@@ -112,7 +112,7 @@ export const products: Product[] = [
     usdPrice: 246,
     category: 'مختبرات',
     brand: 'LabVision',
-    emoji: '🔬',
+    icon: 'Microscope',
     stock: 5,
   },
   {
@@ -123,7 +123,7 @@ export const products: Product[] = [
     usdPrice: 17,
     category: 'أجهزة طبية',
     brand: 'OxyCheck',
-    emoji: '💓',
+    icon: 'Heart',
     stock: 60,
   },
   {
@@ -134,7 +134,7 @@ export const products: Product[] = [
     usdPrice: 111,
     category: 'مستلزمات طبية',
     brand: 'SurgiPro',
-    emoji: '✂️',
+    icon: 'Scissors',
     badge: 'hot',
     stock: 12,
   },
@@ -146,7 +146,7 @@ export const products: Product[] = [
     usdPrice: 11,
     category: 'طب الأسنان',
     brand: 'DentaCover',
-    emoji: '🛋️',
+    icon: 'Armchair',
     stock: 300,
   },
 ];

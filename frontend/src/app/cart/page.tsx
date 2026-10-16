@@ -1,6 +1,7 @@
 "use client";
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import ProductIcon from '@/components/ui/ProductIcon';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 
@@ -33,9 +34,7 @@ export default function CartPage() {
         <div className="space-y-4 mb-8">
           {items.map((item) => (
             <div key={item.product.id} className="bg-white border-2 border-brand/20 rounded-2xl p-5 flex items-center gap-4">
-              <div className="bg-paper2 rounded-xl w-20 h-20 grid place-items-center text-3xl flex-shrink-0">
-                {item.product.emoji}
-              </div>
+              <div className="bg-paper2 rounded-xl w-20 h-20 grid place-items-center text-brand flex-shrink-0"><ProductIcon name={item.product.icon} size={40} /></div>
               <div className="flex-1">
                 <h3 className="font-bold text-lg text-ink">{item.product.name}</h3>
                 <p className="text-neutral-500 text-sm">{item.product.brand}</p>

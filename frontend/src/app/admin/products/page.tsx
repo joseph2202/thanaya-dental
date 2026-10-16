@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { products as initialProducts, Product } from '@/data/products';
 import Link from 'next/link';
+import ProductIcon from '@/components/ui/ProductIcon';
 
 export default function AdminProducts() {
   const [productsList, setProductsList] = useState<Product[]>([]);
@@ -96,7 +97,7 @@ export default function AdminProducts() {
               <tr key={p.id} className="border-t border-brand/10">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{p.emoji}</span>
+                    <div className="text-brand"><ProductIcon name={p.icon} size={32} /></div>
                     <div>
                       <p className="font-bold text-sm text-ink">{p.name}</p>
                       <p className="text-xs text-neutral-500">{p.brand}</p>
@@ -144,7 +145,7 @@ function ProductForm({ product, onSave, onCancel }: { product: Product | null; o
     usdPrice: 0,
     category: '',
     brand: '',
-    emoji: '📦',
+    icon: 'Package',
     stock: 0,
   });
 
@@ -207,9 +208,9 @@ function ProductForm({ product, onSave, onCancel }: { product: Product | null; o
         />
         <input
           type="text"
-          placeholder="Emoji (مثل 🦷)"
-          value={form.emoji}
-          onChange={(e) => setForm({ ...form, emoji: e.target.value })}
+          placeholder="اسم الأيقونة (مثل Stethoscope)"
+          value={form.icon}
+          onChange={(e) => setForm({ ...form, icon: e.target.value })}
           className="border-2 border-brand/30 rounded-xl px-4 py-2"
           required
         />
