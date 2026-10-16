@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
+import { AuthProvider } from "@/context/AuthContext";
 import BackgroundPattern from "@/components/layout/BackgroundPattern";
 
 export const metadata: Metadata = {
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-paper text-ink relative">
         <BackgroundPattern />
         <div className="relative z-10">
-          <CartProvider>{children}</CartProvider>
+          <AuthProvider>
+            <CartProvider>{children}</CartProvider>
+          </AuthProvider>
         </div>
       </body>
     </html>

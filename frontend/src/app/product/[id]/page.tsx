@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import AddToCartButton from '@/components/product/AddToCartButton';
+import BuyNowButton from '@/components/product/BuyNowButton';
 
 export function generateStaticParams() {
   return products.map((p) => ({ id: p.id }));
@@ -51,14 +52,14 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
 
             <div className="flex items-center gap-3 mb-6">
               <span className={`inline-block w-3 h-3 rounded-full ${product.stock > 0 ? 'bg-success' : 'bg-red-500'}`}></span>
-              <span className="font-bold text-ink">{product.stock > 0 ? `متوفر (${product.stock} قطعة)` : 'نفد المخزون'}</span>
+              <span className="font-bold text-ink">
+                {product.stock > 0 ? `متوفر (${product.stock} قطعة)` : 'نفد المخزون'}
+              </span>
             </div>
 
             <div className="flex gap-3 flex-wrap">
               <AddToCartButton product={product} />
-              <button className="bg-ink text-paper rounded-full px-8 py-3 font-bold hover:bg-ink/90 transition">
-                اشتري الآن
-              </button>
+              <BuyNowButton product={product} />
             </div>
           </div>
         </div>

@@ -154,3 +154,18 @@ export const products: Product[] = [
 export const getProduct = (id: string) => products.find((p) => p.id === id);
 export const getProductsByCategory = (category: string) =>
   products.filter((p) => p.category === category);
+
+
+export const checkStock = (productId: string, quantity: number): { available: boolean; message: string } => {
+  const product = products.find((p) => p.id === productId);
+  if (!product) {
+    return { available: false, message: 'المنتج غير موجود' };
+  }
+  if (product.stock <= 0) {
+    return { available: false, message: 'نفد المخزون' };
+  }
+  if (quantity > product.stock) {
+    return { available: false, message: `الكمية المطلوبة غير متوفرة (متوفر فقط ${product.stock} قطعة)` };
+  }
+  return { available: true, message: 'متوفر' };
+};

@@ -1,9 +1,10 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { saveOrder } from '@/lib/orders';
 import Link from 'next/link';
 
@@ -15,6 +16,7 @@ const cities = [
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const { items, totalPrice, clearCart } = useCart();
   const [form, setForm] = useState({
     name: '',
@@ -23,6 +25,29 @@ export default function CheckoutPage() {
     city: 'بغداد',
   });
   const [submitting, setSubmitting] = useState(false);
+
+  // حماية الصفحة - redirect للـ login إذا ما كان مسجل
+  useEffect(() => {
+    if (!user) {
+      router.push('/login?redirect=/checkout');
+    }
+  }, [user, router]);
+
+  // ملء البيانات تلقائياً من الحساب
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user.name,
+        phone: user.phone,
+        address: '',
+        city: 'بغداد',
+      });
+    }
+  }, [user]);
+
+  if (!user) {
+    return null;
+  }
 
   if (items.length === 0) {
     return (
@@ -72,21 +97,26 @@ export default function CheckoutPage() {
                 type="text"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
+                className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-brand"
                 placeholder="مثال: أحمد محمد"
               />
             </div>
 
             <div>
               <label className="block font-bold mb-2 text-sm text-ink">رقم الهاتف</label>
-              <input
-                required
-                type="tel"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20"
-                placeholder="07XX XXX XXXX"
-              />
+              <div className="flex gap-2">
+                <span className="bg-paper2 border-2 border-brand/30 rounded-xl px-4 py-3 font-bold text-ink">+964</span>
+                <input
+                  required
+                  type="tel"
+                  pattern="07[0-9]{9}"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  className="flex-1 border-2 border-brand/30 rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-brand"
+                  placeholder="7822088894"
+                />
+              </div>
+              <p className="text-xs text-neutral-500 mt-1">مثال: 07822088894 أو 07712345678</p>
             </div>
 
             <div>
@@ -94,7 +124,7 @@ export default function CheckoutPage() {
               <select
                 value={form.city}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
-                className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 bg-white"
+                className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-brand bg-white"
               >
                 {cities.map((c) => (
                   <option key={c} value={c}>{c}</option>
@@ -109,7 +139,7 @@ export default function CheckoutPage() {
                 value={form.address}
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
                 rows={3}
-                className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 resize-none"
+                className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-brand resize-none"
                 placeholder="المنطقة، الشارع، أقرب نقطة دالة..."
               />
             </div>

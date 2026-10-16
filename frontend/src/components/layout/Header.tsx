@@ -1,12 +1,14 @@
 "use client";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { totalItems } = useCart();
+  const { user, logout } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
@@ -56,14 +58,34 @@ export default function Header() {
           <Link href="/offers" className="hover:text-brand transition">العروض</Link>
         </nav>
 
-        <Link href="/cart" className="bg-brand text-white rounded-full px-5 py-2 font-bold relative hover:bg-brand-dark transition">
-          السلة
-          {totalItems > 0 && (
-            <span className="absolute -top-2 -right-2 bg-ink text-white rounded-full w-6 h-6 grid place-items-center text-xs font-black border-2 border-paper">
-              {totalItems}
-            </span>
+        <div className="flex items-center gap-3">
+          {user ? (
+            <>
+              <Link href="/account" className="text-sm font-bold hover:text-brand transition">
+                حسابي
+              </Link>
+              <button
+                onClick={logout}
+                className="text-sm font-bold text-red-600 hover:text-red-700 transition"
+              >
+                خروج
+              </button>
+            </>
+          ) : (
+            <Link href="/login" className="bg-brand text-white rounded-full px-5 py-2 font-bold hover:bg-brand-dark transition">
+              دخول
+            </Link>
           )}
-        </Link>
+          
+          <Link href="/cart" className="bg-brand text-white rounded-full px-5 py-2 font-bold relative hover:bg-brand-dark transition">
+            السلة
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-ink text-white rounded-full w-6 h-6 grid place-items-center text-xs font-black border-2 border-paper">
+                {totalItems}
+              </span>
+            )}
+          </Link>
+        </div>
       </div>
 
       {/* شريط البحث للموبايل */}
