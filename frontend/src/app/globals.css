@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0a0a;
+  --color-paper: #faf9f6;
+  --color-paper2: #f1efe9;
+  --color-mark: #fde047;
+  --color-brand: #0f766e;
+  --font-sans: "Thmanyah Sans", "IBM Plex Sans Arabic", "Cairo", sans-serif;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
