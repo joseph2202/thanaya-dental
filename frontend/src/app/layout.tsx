@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { CartProvider } from "@/context/CartContext";
 
 export const metadata: Metadata = {
   title: "ثنايا | مستلزمات وأجهزة طبية",
@@ -21,7 +22,7 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased bg-paper text-ink">
-        {children}
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );

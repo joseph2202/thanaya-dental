@@ -1,0 +1,90 @@
+"use client";
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import { useCart } from '@/context/CartContext';
+import Link from 'next/link';
+
+export default function CartPage() {
+  const { items, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
+
+  if (items.length === 0) {
+    return (
+      <>
+        <Header />
+        <main className="max-w-4xl mx-auto px-4 py-20 text-center">
+          <div className="text-8xl mb-6"></div>
+          <h1 className="text-4xl font-black mb-4">سلتك فارغة</h1>
+          <p className="text-neutral-600 mb-8">لم تضف أي منتج بعد. تسوق الآن!</p>
+          <Link href="/products" className="bg-ink text-paper rounded-full px-8 py-3 font-bold inline-block shadow-[4px_4px_0_#FDE047]">
+            تصفح المنتجات
+          </Link>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <Header />
+      <main className="max-w-4xl mx-auto px-4 py-12">
+        <h1 className="text-4xl font-black mb-8">سلة التسوق</h1>
+
+        <div className="space-y-4 mb-8">
+          {items.map((item) => (
+            <div key={item.product.id} className="bg-white border-2 border-ink rounded-2xl p-5 flex items-center gap-4">
+              <div className="bg-paper2 rounded-xl w-20 h-20 grid place-items-center text-3xl flex-shrink-0">
+                {item.product.emoji}
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg">{item.product.name}</h3>
+                <p className="text-neutral-500 text-sm">{item.product.brand}</p>
+                <p className="text-brand font-black mt-1">{item.product.price.toLocaleString()} د.ع</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                  className="w-8 h-8 rounded-full border-2 border-ink font-bold hover:bg-mark"
+                >
+                  -
+                </button>
+                <span className="font-bold w-8 text-center">{item.quantity}</span>
+                <button
+                  onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                  className="w-8 h-8 rounded-full border-2 border-ink font-bold hover:bg-mark"
+                >
+                  +
+                </button>
+              </div>
+              <div className="text-left">
+                <p className="font-black text-lg">{(item.product.price * item.quantity).toLocaleString()} د.ع</p>
+                <button
+                  onClick={() => removeFromCart(item.product.id)}
+                  className="text-red-600 text-sm font-bold hover:underline"
+                >
+                  حذف
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="bg-paper2 border-2 border-ink rounded-2xl p-6">
+          <div className="flex justify-between items-center mb-4">
+            <span className="font-bold text-lg">المجموع:</span>
+            <span className="text-3xl font-black text-brand">{totalPrice.toLocaleString()} د.ع</span>
+          </div>
+          <div className="flex gap-3">
+            <Link href="/checkout" className="flex-1 bg-ink text-paper rounded-full py-3 font-bold text-center shadow-[4px_4px_0_#FDE047]">
+              إتمام الطلب
+            </Link>
+            <button onClick={clearCart} className="bg-white border-2 border-ink rounded-full px-6 py-3 font-bold">
+              إفراغ السلة
+            </button>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}

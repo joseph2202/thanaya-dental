@@ -13,3 +13,13 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
 }
+
+@keyframes marquee {
+  from { transform: translateX(50%); }
+  to { transform: translateX(0); }
+}
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+  display: flex;
+  gap: 2rem;
+}
