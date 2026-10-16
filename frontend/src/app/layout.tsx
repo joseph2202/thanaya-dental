@@ -7,7 +7,9 @@ export const metadata: Metadata = {
   description:
     "متجر عراقي للمستلزمات الطبية وطب الأسنان والأجهزة: منتجات موثقة وأسعار بالدينار والدولار.",
   icons: {
-    icon: '/logo.png',
+    icon: '/logo-icon.png',
+    shortcut: '/logo-icon.png',
+    apple: '/logo-icon.png',
   },
 };
 

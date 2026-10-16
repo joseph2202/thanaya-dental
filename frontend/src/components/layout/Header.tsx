@@ -11,13 +11,14 @@ export default function Header() {
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-4 px-4 py-3">
         <Link href="/" className="flex items-center gap-2">
           <Image
-            src="/logo.png"
-            alt="Al Thanaya - الثنايا"
-            width={140}
+            src="/logo-icon.png"
+            alt="Al Thanaya"
+            width={40}
             height={40}
-            className="h-10 w-auto"
+            className="h-10 w-10"
             priority
           />
+          <span className="font-black text-xl text-ink">الثنايا</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6 font-bold text-ink">
           <Link href="/" className="hover:text-brand transition">الرئيسية</Link>
