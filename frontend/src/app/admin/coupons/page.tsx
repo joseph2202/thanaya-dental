@@ -1,45 +1,62 @@
 "use client";
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-
-type Coupon = { id: string; code: string; discount: number; active: boolean };
+import { couponsAPI } from '@/lib/api';
 
 export default function AdminCoupons() {
-  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [coupons, setCoupons] = useState<any[]>([]);
   const [newCoupon, setNewCoupon] = useState({ code: '', discount: 0 });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    const saved = localStorage.getItem('thanaya-coupons');
-    if (saved) {
-      setCoupons(JSON.parse(saved));
-    }
+    loadCoupons();
   }, []);
 
-  const handleAdd = (e: React.FormEvent) => {
+  const loadCoupons = async () => {
+    try {
+      const data = await couponsAPI.getAll();
+      setCoupons(data);
+    } catch (error) {
+      console.error('فشل تحميل الكوبونات:', error);
+    }
+  };
+
+  const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    const coupon: Coupon = {
-      id: 'coupon-' + Date.now(),
-      code: newCoupon.code.toUpperCase(),
-      discount: newCoupon.discount,
-      active: true,
-    };
-    const updated = [...coupons, coupon];
-    setCoupons(updated);
-    localStorage.setItem('thanaya-coupons', JSON.stringify(updated));
-    setNewCoupon({ code: '', discount: 0 });
+    if (!newCoupon.code.trim() || newCoupon.discount <= 0) return;
+    
+    setLoading(true);
+    try {
+      await couponsAPI.create(newCoupon);
+      await loadCoupons();
+      setNewCoupon({ code: '', discount: 0 });
+      setSuccess('تم إضافة الكوبون بنجاح');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      alert('فشل إضافة الكوبون');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleToggle = (id: string) => {
-    const updated = coupons.map(c => c.id === id ? { ...c, active: !c.active } : c);
-    setCoupons(updated);
-    localStorage.setItem('thanaya-coupons', JSON.stringify(updated));
+  const handleToggle = async (id: string) => {
+    try {
+      await couponsAPI.toggle(id);
+      await loadCoupons();
+    } catch (error) {
+      alert('فشل تحديث حالة الكوبون');
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('هل أنت متأكد من حذف هذا الكوبون؟')) {
-      const updated = coupons.filter(c => c.id !== id);
-      setCoupons(updated);
-      localStorage.setItem('thanaya-coupons', JSON.stringify(updated));
+      try {
+        await couponsAPI.delete(id);
+        await loadCoupons();
+      } catch (error) {
+        alert('فشل حذف الكوبون');
+      }
     }
   };
 
@@ -47,27 +64,42 @@ export default function AdminCoupons() {
     <AdminLayout>
       <h2 className="text-3xl font-black mb-8 text-ink">إدارة الكوبونات</h2>
 
-      <form onSubmit={handleAdd} className="bg-white border-2 border-brand/20 rounded-2xl p-6 mb-6 flex gap-4">
-        <input
-          type="text"
-          placeholder="كود الكوبون (مثل THANAYA20)"
-          value={newCoupon.code}
-          onChange={(e) => setNewCoupon({ ...newCoupon, code: e.target.value })}
-          className="flex-1 border-2 border-brand/30 rounded-xl px-4 py-2"
-          required
-        />
-        <input
-          type="number"
-          placeholder="نسبة الخصم %"
-          value={newCoupon.discount}
-          onChange={(e) => setNewCoupon({ ...newCoupon, discount: Number(e.target.value) })}
-          className="w-32 border-2 border-brand/30 rounded-xl px-4 py-2"
-          required
-          min="1"
-          max="100"
-        />
-        <button type="submit" className="bg-brand text-white rounded-full px-6 py-2 font-bold">
-          إضافة
+      {success && (
+        <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4 mb-6 text-green-700 font-bold">
+          ✅ {success}
+        </div>
+      )}
+
+      <form onSubmit={handleAdd} className="bg-white border-2 border-brand/20 rounded-2xl p-6 mb-6">
+        <h3 className="font-black text-lg mb-4 text-ink">➕ إضافة كوبون جديد</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-2">
+            <label className="block font-bold mb-2 text-sm text-ink">كود الكوبون *</label>
+            <input
+              type="text"
+              placeholder="مثال: THANAYA20"
+              value={newCoupon.code}
+              onChange={(e) => setNewCoupon({ ...newCoupon, code: e.target.value.toUpperCase() })}
+              className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 focus:outline-none focus:border-brand"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-bold mb-2 text-sm text-ink">نسبة الخصم % *</label>
+            <input
+              type="number"
+              placeholder="20"
+              value={newCoupon.discount || ''}
+              onChange={(e) => setNewCoupon({ ...newCoupon, discount: Number(e.target.value) })}
+              className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 focus:outline-none focus:border-brand"
+              required
+              min="1"
+              max="100"
+            />
+          </div>
+        </div>
+        <button type="submit" disabled={loading} className="mt-4 bg-brand text-white rounded-full px-6 py-2 font-bold hover:bg-brand-dark transition disabled:opacity-50">
+          {loading ? 'جاري الإضافة...' : 'إضافة الكوبون'}
         </button>
       </form>
 
@@ -83,13 +115,13 @@ export default function AdminCoupons() {
           </thead>
           <tbody>
             {coupons.map((coupon) => (
-              <tr key={coupon.id} className="border-t border-brand/10">
+              <tr key={coupon.id} className="border-t border-brand/10 hover:bg-paper2/50">
                 <td className="px-4 py-3 font-bold text-brand">{coupon.code}</td>
                 <td className="px-4 py-3 text-ink">{coupon.discount}%</td>
                 <td className="px-4 py-3">
                   <button
                     onClick={() => handleToggle(coupon.id)}
-                    className={`text-xs px-3 py-1 rounded-full font-bold ${coupon.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}
+                    className={`text-xs px-3 py-1 rounded-full font-bold transition ${coupon.active ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                   >
                     {coupon.active ? 'نشط' : 'معطل'}
                   </button>

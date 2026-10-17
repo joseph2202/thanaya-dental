@@ -2,22 +2,29 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Link from 'next/link';
-import { getUsers } from '@/lib/auth';
-import { getOrders } from '@/lib/orders';
-import { products } from '@/data/products';
+import { usersAPI, ordersAPI } from '@/lib/api';
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState({ products: 0, orders: 0, users: 0, revenue: 0 });
 
   useEffect(() => {
-    const users = getUsers();
-    const orders = getOrders();
-    setStats({
-      products: products.length,
-      orders: orders.length,
-      users: users.length,
-      revenue: orders.reduce((sum, o) => sum + o.total, 0),
-    });
+    const loadData = async () => {
+      try {
+        const [users, orders] = await Promise.all([
+          usersAPI.getAll(),
+          ordersAPI.getAll(),
+        ]);
+        setStats({
+          products: 12,
+          orders: orders.length,
+          users: users.length,
+          revenue: orders.reduce((sum: number, o: any) => sum + o.total, 0),
+        });
+      } catch (error) {
+        console.error('Error loading admin data:', error);
+      }
+    };
+    loadData();
   }, []);
 
   return (

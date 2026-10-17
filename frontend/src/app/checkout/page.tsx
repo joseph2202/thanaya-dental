@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer';
 import ProductIcon from '@/components/ui/ProductIcon';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { saveOrder } from '@/lib/orders';
+import { ordersAPI } from '@/lib/api';
 import Link from 'next/link';
 
 const cities = [
@@ -66,15 +66,15 @@ export default function CheckoutPage() {
     );
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
 
-    const order = saveOrder({
+    const order = await ordersAPI.create({
       items,
       total: totalPrice,
       customer: form,
-      paymentMethod: 'cod',
+      userId: user?.id || null,
     });
 
     clearCart();

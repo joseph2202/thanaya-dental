@@ -1,6 +1,5 @@
 "use client";
-import { useCart } from '@/context/CartContext';
-import { Product } from '@/data/products';
+import { useCart, Product } from '@/context/CartContext';
 import { useState } from 'react';
 
 export default function AddToCartButton({ product }: { product: Product }) {
@@ -25,7 +24,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
           message && !isError ? 'bg-success shadow-[4px_4px_0_#059669]' : 'shadow-[4px_4px_0_#047ba8] hover:shadow-[6px_6px_0_#047ba8]'
         }`}
       >
-        {product.stock <= 0 ? 'نفد المخزون' : message || 'أضف للسلة'}
+        {product.stock <= 0 ? 'نفد المخزون' : (message || 'أضف للسلة')}
       </button>
       {message && isError && (
         <p className="text-red-600 text-sm font-bold">{message}</p>

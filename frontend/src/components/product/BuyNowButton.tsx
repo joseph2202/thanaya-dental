@@ -1,7 +1,6 @@
 "use client";
-import { useCart } from '@/context/CartContext';
+import { useCart, Product } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
-import { Product } from '@/data/products';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -13,7 +12,6 @@ export default function BuyNowButton({ product }: { product: Product }) {
   const [isError, setIsError] = useState(false);
 
   const handleBuyNow = () => {
-    // التحقق من المخزون
     const result = addToCart(product);
     
     if (!result.success) {
@@ -23,13 +21,11 @@ export default function BuyNowButton({ product }: { product: Product }) {
       return;
     }
 
-    // إذا ما كان مسجل، يروح للـ login أولاً
     if (!user) {
       router.push('/login?redirect=/checkout');
       return;
     }
 
-    // يروح مباشرة للـ checkout
     router.push('/checkout');
   };
 

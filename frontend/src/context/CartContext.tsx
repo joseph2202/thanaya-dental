@@ -1,6 +1,18 @@
 "use client";
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Product, checkStock } from '@/data/products';
+
+export type Product = {
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+  usdPrice?: number;
+  category?: string;
+  brand?: string;
+  icon?: string;
+  badge?: string;
+  stock: number;
+};
 
 export type CartItem = {
   product: Product;
@@ -38,17 +50,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [items]);
 
   const addToCart = (product: Product, quantity: number = 1): { success: boolean; message: string } => {
-    const stockCheck = checkStock(product.id, quantity);
-    if (!stockCheck.available) {
-      return { success: false, message: stockCheck.message };
+    // التحقق من المخزون باستخدام بيانات المنتج الممررة مباشرة
+    if (product.stock <= 0) {
+      return { success: false, message: 'نفد المخزون' };
     }
 
     setItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
       if (existing) {
         const newQuantity = existing.quantity + quantity;
-        const newStockCheck = checkStock(product.id, newQuantity);
-        if (!newStockCheck.available) {
+        if (newQuantity > product.stock) {
           return prev;
         }
         return prev.map((item) =>
@@ -73,14 +84,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       return { success: true, message: 'تم الحذف' };
     }
 
-    const product = items.find((item) => item.product.id === productId)?.product;
-    if (!product) {
-      return { success: false, message: 'المنتج غير موجود' };
+    const item = items.find((item) => item.product.id === productId);
+    if (!item) {
+      return { success: false, message: 'المنتج غير موجود في السلة' };
     }
 
-    const stockCheck = checkStock(productId, quantity);
-    if (!stockCheck.available) {
-      return { success: false, message: stockCheck.message };
+    if (quantity > item.product.stock) {
+      return { success: false, message: `الكمية المطلوبة غير متوفرة (متوفر فقط ${item.product.stock} قطعة)` };
     }
 
     setItems((prev) =>

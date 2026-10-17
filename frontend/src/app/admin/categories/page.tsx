@@ -1,49 +1,53 @@
 "use client";
 import { useState, useEffect } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
-
-type Category = { id: string; name: string; icon: string };
+import { categoriesAPI } from '@/lib/api';
 
 export default function AdminCategories() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [newCategory, setNewCategory] = useState({ name: '', icon: '' });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    const saved = localStorage.getItem('thanaya-categories');
-    if (saved) {
-      setCategories(JSON.parse(saved));
-    } else {
-      const defaultCats: Category[] = [
-        { id: '1', name: 'مستلزمات طبية', icon: '🩺' },
-        { id: '2', name: 'طب الأسنان', icon: '🦷' },
-        { id: '3', name: 'أجهزة طبية', icon: '️' },
-        { id: '4', name: 'مختبرات', icon: '' },
-        { id: '5', name: 'تعقيم', icon: '🧼' },
-        { id: '6', name: 'كراسي ومتحركة', icon: '' },
-      ];
-      setCategories(defaultCats);
-      localStorage.setItem('thanaya-categories', JSON.stringify(defaultCats));
-    }
+    loadCategories();
   }, []);
 
-  const handleAdd = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newCat: Category = {
-      id: 'cat-' + Date.now(),
-      name: newCategory.name,
-      icon: newCategory.icon || '📦',
-    };
-    const updated = [...categories, newCat];
-    setCategories(updated);
-    localStorage.setItem('thanaya-categories', JSON.stringify(updated));
-    setNewCategory({ name: '', icon: '' });
+  const loadCategories = async () => {
+    try {
+      const data = await categoriesAPI.getAll();
+      setCategories(data);
+    } catch (error) {
+      console.error('فشل تحميل التصنيفات:', error);
+    }
   };
 
-  const handleDelete = (id: string) => {
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCategory.name.trim()) return;
+    
+    setLoading(true);
+    try {
+      await categoriesAPI.create(newCategory);
+      await loadCategories();
+      setNewCategory({ name: '', icon: '' });
+      setSuccess('تم إضافة التصنيف بنجاح');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (error) {
+      alert('فشل إضافة التصنيف');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
     if (confirm('هل أنت متأكد من حذف هذا التصنيف؟')) {
-      const updated = categories.filter(c => c.id !== id);
-      setCategories(updated);
-      localStorage.setItem('thanaya-categories', JSON.stringify(updated));
+      try {
+        await categoriesAPI.delete(id);
+        await loadCategories();
+      } catch (error) {
+        alert('فشل حذف التصنيف');
+      }
     }
   };
 
@@ -51,24 +55,39 @@ export default function AdminCategories() {
     <AdminLayout>
       <h2 className="text-3xl font-black mb-8 text-ink">إدارة التصنيفات</h2>
 
-      <form onSubmit={handleAdd} className="bg-white border-2 border-brand/20 rounded-2xl p-6 mb-6 flex gap-4">
-        <input
-          type="text"
-          placeholder="اسم التصنيف"
-          value={newCategory.name}
-          onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
-          className="flex-1 border-2 border-brand/30 rounded-xl px-4 py-2"
-          required
-        />
-        <input
-          type="text"
-          placeholder="أيقونة (Emoji)"
-          value={newCategory.icon}
-          onChange={(e) => setNewCategory({ ...newCategory, icon: e.target.value })}
-          className="w-32 border-2 border-brand/30 rounded-xl px-4 py-2"
-        />
-        <button type="submit" className="bg-brand text-white rounded-full px-6 py-2 font-bold">
-          إضافة
+      {success && (
+        <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4 mb-6 text-green-700 font-bold">
+          ✅ {success}
+        </div>
+      )}
+
+      <form onSubmit={handleAdd} className="bg-white border-2 border-brand/20 rounded-2xl p-6 mb-6">
+        <h3 className="font-black text-lg mb-4 text-ink">➕ إضافة تصنيف جديد</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-2">
+            <label className="block font-bold mb-2 text-sm text-ink">اسم التصنيف *</label>
+            <input
+              type="text"
+              placeholder="مثال: طب الأسنان"
+              value={newCategory.name}
+              onChange={(e) => setNewCategory({ ...newCategory, name: e.target.value })}
+              className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 focus:outline-none focus:border-brand"
+              required
+            />
+          </div>
+          <div>
+            <label className="block font-bold mb-2 text-sm text-ink">الأيقونة (Emoji)</label>
+            <input
+              type="text"
+              placeholder=""
+              value={newCategory.icon}
+              onChange={(e) => setNewCategory({ ...newCategory, icon: e.target.value })}
+              className="w-full border-2 border-brand/30 rounded-xl px-4 py-3 focus:outline-none focus:border-brand"
+            />
+          </div>
+        </div>
+        <button type="submit" disabled={loading} className="mt-4 bg-brand text-white rounded-full px-6 py-2 font-bold hover:bg-brand-dark transition disabled:opacity-50">
+          {loading ? 'جاري الإضافة...' : 'إضافة التصنيف'}
         </button>
       </form>
 
@@ -83,7 +102,7 @@ export default function AdminCategories() {
           </thead>
           <tbody>
             {categories.map((cat) => (
-              <tr key={cat.id} className="border-t border-brand/10">
+              <tr key={cat.id} className="border-t border-brand/10 hover:bg-paper2/50">
                 <td className="px-4 py-3 text-2xl">{cat.icon}</td>
                 <td className="px-4 py-3 font-bold text-ink">{cat.name}</td>
                 <td className="px-4 py-3">

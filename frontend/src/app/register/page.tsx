@@ -14,11 +14,10 @@ export default function RegisterPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    // التحقق من تطابق كلمة المرور
     if (form.password !== form.confirmPassword) {
       setError('كلمتا المرور غير متطابقتين');
       return;
@@ -26,7 +25,7 @@ export default function RegisterPage() {
 
     setLoading(true);
 
-    const result = registerUser(form.name, form.email, form.phone, form.password);
+    const result = await registerUser(form.name, form.email, form.phone, form.password);
     
     if (result.user) {
       refreshUser();
